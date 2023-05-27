@@ -11,5 +11,6 @@ public interface PersonRepository extends CrudRepository<Person, Integer> {
 
     Optional<Person> findByLogin(String login);
 
-    boolean deleteByLogin(String login);
+    boolean deleteById(int id);
+
 }

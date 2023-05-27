@@ -41,15 +41,15 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        if (persons.update(person)) {
+        if (this.persons.update(person)) {
             return ResponseEntity.ok().build();
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{login}")
-    public ResponseEntity<Void> delete(@PathVariable String login) {
-        if (persons.deleteByLogin(login)) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable int id) {
+        if (this.persons.delete(id)) {
             return ResponseEntity.ok().build();
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

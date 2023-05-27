@@ -37,10 +37,11 @@ public class PersonService {
         return personRepository.findByLogin(login);
     }
 
-    public boolean deleteByLogin(String login) {
-        if (findByLogin(login).isPresent()) {
-            return this.personRepository.deleteByLogin(login);
+    public boolean delete(int id) {
+        if (personRepository.findById(id).isPresent()) {
+            return this.personRepository.deleteById(id);
         }
         return false;
     }
+
 }
