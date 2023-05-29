@@ -2,6 +2,7 @@ package ru.job4j.auth.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.auth.domain.Person;
 import ru.job4j.auth.service.PersonService;
@@ -12,12 +13,14 @@ import java.util.List;
 @RequestMapping("/person")
 public class PersonController {
     private final PersonService persons;
+    private BCryptPasswordEncoder encoder;
 
-    public PersonController(final PersonService persons) {
+    public PersonController(final PersonService persons, BCryptPasswordEncoder encoder) {
         this.persons = persons;
+        this.encoder = encoder;
     }
 
-    @GetMapping("/")
+    @GetMapping({"/", "/all"})
     public List<Person> findAll() {
         return this.persons.findAll();
     }
@@ -31,15 +34,16 @@ public class PersonController {
         );
     }
 
-    @PostMapping("/")
+    @PostMapping("/sign-up")
     public ResponseEntity<Person> create(@RequestBody Person person) {
+        person.setPassword(encoder.encode(person.getPassword()));
         return new ResponseEntity<>(
                 this.persons.save(person),
                 HttpStatus.CREATED
         );
     }
 
-    @PutMapping("/")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Void> update(@RequestBody Person person) {
         if (this.persons.update(person)) {
             return ResponseEntity.ok().build();
@@ -47,7 +51,7 @@ public class PersonController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         if (this.persons.delete(id)) {
             return ResponseEntity.ok().build();
