@@ -1,6 +1,7 @@
 package ru.job4j.auth.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -53,7 +54,7 @@ public class PersonService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         Optional<Person> user = personRepository.findByLogin(login);
-        if (user == null) {
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException(login);
         }
         return new User(user.get().getLogin(), user.get().getPassword(), emptyList());
