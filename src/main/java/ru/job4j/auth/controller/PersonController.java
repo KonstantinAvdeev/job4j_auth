@@ -10,6 +10,7 @@ import org.springframework.util.MultiValueMapAdapter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.auth.domain.Person;
+import ru.job4j.auth.dto.PersonDTO;
 import ru.job4j.auth.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,6 +84,19 @@ public class PersonController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Person> patchPersonDTO(@RequestBody PersonDTO personDTO,
+                                                 @PathVariable int id) {
+        var person = persons.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND));
+        person.setPassword(personDTO.getPassword());
+        if (!persons.update(person)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @ExceptionHandler(value = IllegalArgumentException.class)
     public void exceptionHandler(Exception e, HttpServletRequest request,
