@@ -15,6 +15,7 @@ import ru.job4j.auth.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersonController.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonController.class
+            .getSimpleName());
     private final PersonService persons;
     private BCryptPasswordEncoder encoder;
     private final ObjectMapper objectMapper;
@@ -52,7 +54,7 @@ public class PersonController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Person> create(@RequestBody Person person) {
+    public ResponseEntity<Person> create(@Valid @RequestBody Person person) {
         if (person.getLogin() == null || person.getPassword() == null) {
             throw new NullPointerException("Login and password must not be empty!");
         }
@@ -67,7 +69,7 @@ public class PersonController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
+    public ResponseEntity<Void> update(@Valid @RequestBody Person person) {
         if (person.getLogin() == null || person.getPassword() == null) {
             throw new NullPointerException("Login and password must not be empty!");
         }
@@ -86,7 +88,7 @@ public class PersonController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Person> patchPersonDTO(@RequestBody PersonDTO personDTO,
+    public ResponseEntity<Person> patchPersonDTO(@Valid @RequestBody PersonDTO personDTO,
                                                  @PathVariable int id) {
         var person = persons.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND));
